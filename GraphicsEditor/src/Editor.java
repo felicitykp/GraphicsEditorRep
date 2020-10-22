@@ -145,7 +145,7 @@ public class Editor{
 							if(shapes.get(i+1) != null) {
 								Shape temp = shapes.get(i);
 								shapes.remove(i);
-								shapes.addTo(temp, shapes.size()-1);
+								shapes.add(temp);
 							}
 						}
 					}
