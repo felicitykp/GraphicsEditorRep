@@ -43,7 +43,31 @@ public class Circle extends Shape{
 		
 	}
 
-	public void resize(int newX, int newY) {
+	public void resize(int newX, int newY, int initialX, int initialY) {
+		
+		//check X
+		if(newX > x) {
+			width = (int) Math.sqrt((newX - initialX)*(newX - initialX) + (newY - initialY)*(newY - initialY));
+			height = width;
+		} else {
+			width = (int) Math.sqrt((initialX - newX)*(initialX - newX) + (initialY - newY)*(initialY - newY));
+			height = width;
+			x = newX;
+		}
+		
+		//check Y
+		if(newY > y) {
+			height = (int) Math.sqrt((newX - initialX)*(newX - initialX) + (newY - initialY)*(newY - initialY));
+			width = height;
+		} else {
+			height = (int) Math.sqrt((initialX - newX)*(initialX - newX) + (initialY - newY)*(initialY - newY));
+			width = height;
+			y = newY;
+		}
+		
+		
+		
+		
 		
 	}
 

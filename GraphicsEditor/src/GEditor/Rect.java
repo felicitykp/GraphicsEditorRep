@@ -42,20 +42,22 @@ public class Rect extends Shape{
 		
 	}
 
-	public void resize(int newX, int newY) {
+	public void resize(int newX, int newY, int initialX, int initialY) {
 		
 		//change width based on x
 		if(newX > x) {
 			width = newX - x;
-		} else if (newX < x) {
-			width = x - newX;
+		} else {
+			width = initialX - newX;
+			x = newX;
 		}
 		
-		//change height based on x
+		//change height based on y
 		if(newY > y) {
 			height = newY - y;
-		} else if (newY < y) {
-			height = y - newY;
+		} else {
+			height = initialY - newY;
+			y = newY;
 		}
 
 	}

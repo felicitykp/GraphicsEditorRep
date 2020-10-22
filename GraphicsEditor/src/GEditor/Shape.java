@@ -22,6 +22,6 @@ public abstract class Shape {
 	public abstract Shape copy();
 	public abstract void draw(Graphics g);
 	public abstract boolean isOn(int x, int y);
-	public abstract void resize(int newX, int newY);
+	public abstract void resize(int newX, int newY, int initialX, int initialY);
 	
 }

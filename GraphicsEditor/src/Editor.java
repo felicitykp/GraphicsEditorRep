@@ -6,10 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
@@ -23,10 +26,12 @@ public class Editor{
 	//VARIABLES
 	public final int WIDTH = 800, HEIGHT = 600;
 	public final int BUTTON_HEIGHT = 75;
-	public int mouseX1, mouseY1;
+	public int mouseX, mouseY;
 	public Color currColor = Color.BLUE;
 	public LinkedList<Shape> shapes = new LinkedList<Shape>();
-	public boolean circleClick = false, rectClick = false, deleteClick = false, resizeClick = false;
+	public HashMap<String, Boolean> myMap = new HashMap<String, Boolean>();
+	public JColorChooser jc = new JColorChooser();
+	
 
 	//CONSTRUCTOR
 	public Editor() {
@@ -42,35 +47,35 @@ public class Editor{
 		JButton circleButton = new JButton("Circle");
 		circleButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				circleClick = true;
-				rectClick = false;
-				deleteClick = false;
-				resizeClick = false;
+				setAllFalse();
+				myMap.put("circle", true);
 			}});		
 		JButton rectButton = new JButton("Rectangle");
 		rectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				rectClick = true;
-				circleClick = false;
-				deleteClick = false;
-				resizeClick = false;
+				setAllFalse();
+				myMap.put("rect", true);
 			}});	
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				deleteClick = true;
-				rectClick = false;
-				circleClick = false;
-				resizeClick = false;
+				setAllFalse();
+				myMap.put("delete", true);
 			}});	
-		JButton resizeButton = new JButton("Resize");
-		resizeButton.addActionListener(new ActionListener() {
+		JButton colorButton = new JButton("Current Color");
+		colorButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				resizeClick = true;
-				rectClick = false;
-				circleClick = false;
-				deleteClick = false;	
+				setAllFalse();
+				myMap.put("color", true);
+				currColor = jc.showDialog(null, "Select New Color", null);
 			}});
+		JButton forwardButton = new JButton("Front");
+		forwardButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setAllFalse();
+				myMap.put("front", true);
+			}});
+		
 		
 		//set up Button Panel
 		JPanel buttonPanel = new JPanel();
@@ -79,7 +84,8 @@ public class Editor{
 		buttonPanel.add(circleButton);
 		buttonPanel.add(rectButton);
 		buttonPanel.add(deleteButton);
-		buttonPanel.add(resizeButton);
+		buttonPanel.add(colorButton);
+		buttonPanel.add(forwardButton);
 		panel.add(buttonPanel);
 		
 		//set up Drawing Panel
@@ -109,21 +115,38 @@ public class Editor{
 			public void mousePressed(MouseEvent e) {
 		
 				//paints a circle
-				if(circleClick == true) {
-					shapes.add(new Circle(e.getX(), e.getY(), 100, 100, currColor));
-				} 
+				if(myMap.get("circle") == true) {
+					mouseX = e.getX();
+					mouseY = e.getY();
+					shapes.add(new Circle(mouseX, mouseY, 0, 0, currColor));
+				}
 					
 				//paints a rect
-				else if (rectClick == true) { 
-					shapes.add(new Rect(e.getX(), e.getY(), 100, 100, currColor));
+				else if (myMap.get("rect") == true) { 
+					mouseX = e.getX();
+					mouseY = e.getY();
+					shapes.add(new Rect(mouseX, mouseY, 0, 0, currColor));
 				}
 				
 				//deletes a shape
-				else if(deleteClick == true) {
+				else if(myMap.get("delete") == true) {
 					for(int i = 0; i < shapes.size(); i++) {
 						if(shapes.get(i).isOn(e.getX(), e.getY()) == true) {
 							shapes.remove(i);
 							break;
+						}
+					}
+				}
+				
+				//moves a shape forward
+				else if (myMap.get("front") == true) {
+					for(int i = 0; i < shapes.size(); i++) {
+						if(shapes.get(i).isOn(e.getX(), e.getY()) == true) {
+							if(shapes.get(i+1) != null) {
+								Shape temp = shapes.get(i);
+								shapes.remove(i);
+								shapes.addTo(temp, shapes.size()-1);
+							}
 						}
 					}
 				}
@@ -138,9 +161,36 @@ public class Editor{
 		});
 		
 		//add mouse motion listener
+		drawPanel.addMouseMotionListener(new MouseMotionListener() {
+			public void mouseDragged(MouseEvent e) {
+			     //resize a rect
+				if(myMap.get("rect") == true) {
+					shapes.get(shapes.size() - 1).resize(e.getX(), e.getY(), mouseX, mouseY);
+				}
+				
+				//resize a circle
+				if(myMap.get("circle") == true) {
+					shapes.get(shapes.size() - 1).resize(e.getX(), e.getY(), mouseX, mouseY);
+				}
+				
+				//repaint
+				frame.getContentPane().repaint();
+		    }
+			
+			public void mouseMoved(MouseEvent e) {}   
+		});
 		
 			
 			
+	}
+	
+	//METHODS
+	public void setAllFalse() {
+		myMap.put("circle", false);
+		myMap.put("rect", false);
+		myMap.put("delete", false);
+		myMap.put("color", false);
+		myMap.put("front", false);
 	}
 	
 	//MAIN
