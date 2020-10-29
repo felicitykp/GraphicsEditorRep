@@ -1,26 +1,22 @@
+package GEditor;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import GEditor.Shape;
+public class Line extends Shape{
 
-public class Text extends Shape {
-
-	String input;
-	
 	//CONSTRUCTOR
-	public Text(int x, int y, int w, int h, Color c, String i) {
+	public Line(int x, int y, int w, int h, Color c) {
 		super(x, y, w, h, c);
-		input = i;
 	}
 
 	public Shape copy() {
 		return null;
 	}
 
+	
 	public void draw(Graphics g) {
 		g.setColor(c);
-		g.drawString(input, x, y);
-		
+		g.drawLine(x, y, width, height);
 	}
 
 	public boolean isOn(int x, int y) {
@@ -28,7 +24,12 @@ public class Text extends Shape {
 	}
 
 	public void resize(int newX, int newY, int initialX, int initialY) {
-		//no thank u
+		
+		width = newX;
+		height = newY;
+		x = initialX;
+		y = initialY;
+		
 	}
 
 }

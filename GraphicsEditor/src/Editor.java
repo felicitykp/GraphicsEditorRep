@@ -21,8 +21,11 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 import GEditor.Circle;
+import GEditor.Line;
 import GEditor.Rect;
 import GEditor.Shape;
+import GEditor.Text;
+import GEditor.Triangle;
 
 public class Editor{
 	
@@ -195,7 +198,7 @@ public class Editor{
 						if(shapes.get(i).isOn(e.getX(), e.getY()) == true) {
 							shapes.remove(i);
 							break;
-						}
+						} 
 					}
 				}
 				

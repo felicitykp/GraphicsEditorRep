@@ -1,7 +1,6 @@
+package GEditor;
 import java.awt.Color;
 import java.awt.Graphics;
-
-import GEditor.Shape;
 
 public class Triangle extends Shape{
 
@@ -19,20 +18,31 @@ public class Triangle extends Shape{
 	public void draw(Graphics g) {
 		g.setColor(c);
 		
-		//find third point
-		x3 = (int) ((x + width + Math.sqrt(3)*(y - height))/ 2);
-		y3 = (int) ((y + height + Math.sqrt(3)*(x - width))/ 2);
+		if(x > width && y > height) { //2nd quad
+			x3 = (int) ((x + width + (Math.sqrt(3))*(height - y)) / 2);
+			y3 = (int) ((y + height - (Math.sqrt(3))*(width - x)) / 2);
+		} else if (x < width && y < height) { //4th quad
+			x3 = (int) ((x + width - (Math.sqrt(3))*(y - height)) / 2);
+			y3 = (int) ((y + height + (Math.sqrt(3))*(x - width)) / 2);
+		} else if (x > width && y < height){ //3rd quad
+			x3 = (int) ((x + width - (Math.sqrt(3))*(y - height)) / 2);
+			y3 = (int) ((y + height + (Math.sqrt(3))*(x - width)) / 2);
+		} else if (x < width && y > height) { //1st quad
+			x3 = (int) ((x + width + (Math.sqrt(3))*(height - y)) / 2);
+			y3 = (int) ((y + height - (Math.sqrt(3))*(width - x)) / 2);
+		}
 		
 		//draw triangle
 		int[] xpoints = {x, width, x3};
 		int[] ypoints = {y, height, y3};
 		g.fillPolygon(xpoints, ypoints, 3);
+		
 	}
 
 	public boolean isOn(int xC, int yC) {
 		
 		//calculate area of whole triangle
-		double A = area (x, y, width, height, xC, yC);
+		double A = area (x, y, width, height, x3, y3);
 		
 		//calculate area of smaller area
 		double A1 = area (xC, yC, width, height, x3, y3);
