@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -22,6 +23,7 @@ import javax.swing.border.TitledBorder;
 
 import GEditor.Circle;
 import GEditor.Line;
+import GEditor.Oval;
 import GEditor.Rect;
 import GEditor.Shape;
 import GEditor.Text;
@@ -45,8 +47,7 @@ public class Editor{
 		
 		//set up JPanel
 		JPanel panel = new JPanel();
-		BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
-		panel.setLayout(boxlayout);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 5), 
 				"Graphics Editor", TitledBorder.CENTER, TitledBorder.TOP, new Font("Ariel",Font.BOLD,16), Color.BLACK));
 		
@@ -68,6 +69,12 @@ public class Editor{
 			public void actionPerformed(ActionEvent e) {
 				setAllFalse();
 				myMap.put("tri", true);
+			}});
+		JButton ovalButton = new JButton("Oval");
+		ovalButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setAllFalse();
+				myMap.put("oval", true);
 			}});
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
@@ -124,7 +131,7 @@ public class Editor{
 			buttonPanel.add(rectButton);
 			buttonPanel.add(lineButton);
 			buttonPanel.add(triButton);
-			buttonPanel.add(colorButton);
+			buttonPanel.add(ovalButton);
 			//second set of items
 			buttonPanel.add(deleteButton);
 			buttonPanel.add(undoButton);
@@ -134,6 +141,7 @@ public class Editor{
 			buttonPanel.add(textButton);
 			buttonPanel.add(stringPrompt);
 			buttonPanel.add(stringInput);
+			buttonPanel.add(colorButton);
 		panel.add(buttonPanel);
 		
 		
@@ -190,6 +198,13 @@ public class Editor{
 					mouseX = e.getX();
 					mouseY = e.getY();
 					shapes.add(new Triangle(mouseX, mouseY, 0, 0, currColor));
+				}
+				
+				//set up oval
+				else if (myMap.get("oval") == true) {
+					mouseX = e.getX();
+					mouseY = e.getY();
+					shapes.add(new Oval(mouseX, mouseY, 0, 0, currColor));
 				}
 				
 				//deletes a shape
@@ -270,6 +285,11 @@ public class Editor{
 					shapes.get(shapes.size() - 1).resize(e.getX(), e.getY(), mouseX, mouseY);
 				}
 				
+				//resize an oval
+				if(myMap.get("oval") == true) {
+					shapes.get(shapes.size() - 1).resize(e.getX(), e.getY(), mouseX, mouseY);
+				}
+				
 				//line
 				else if(myMap.get("line") == true) {
 					shapes.get(shapes.size() - 1).resize(e.getX(), e.getY(), mouseX, mouseY);
@@ -293,6 +313,7 @@ public class Editor{
 		myMap.put("text", false);
 		myMap.put("back", false);
 		myMap.put("tri", false);
+		myMap.put("oval", false);
 	}
 	
 	//MAIN
